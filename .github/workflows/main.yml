@@ -9,54 +9,54 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout Repository
-      uses: actions/checkout@v2
+      - name: Checkout Repository
+        uses: actions/checkout@v2
 
-    - name: SonarCloud Scan
-      uses: SonarSource/sonarqube-scan-action@v5.0.0
-      with:
-        projectBaseDir: .
-      env:
-        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: SonarCloud Scan
+        uses: SonarSource/sonarqube-scan-action@v5.0.0
+        with:
+          projectBaseDir: .
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-    - name: Login to DockerHub
-      run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u ${{ secrets.DOCKER_USERNAME }} --password-stdin
+      - name: Login to DockerHub
+        run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u ${{ secrets.DOCKER_USERNAME }} --password-stdin
 
-    - name: Set Unique Image Tag
-      id: vars
-      run: echo "IMAGE_TAG=$(date +%s)" >> $GITHUB_ENV
+      - name: Set Unique Image Tag
+        id: vars
+        run: echo "IMAGE_TAG=$(date +%s)" >> $GITHUB_ENV
 
-    - name: Build Frontend Image
-      run: docker build -t siddhartha54/chatapp-frontend:${{ env.IMAGE_TAG }} ./frontend
-      env:
-        REACT_APP_SERVER_URL: ""
+      - name: Build Frontend Image
+        run: docker build -t siddhartha54/chatapp-frontend:${{ env.IMAGE_TAG }} ./frontend
+        env:
+          REACT_APP_SERVER_URL: ""
 
-    - name: Build Backend Image
-      run: docker build -t siddhartha54/chatapp-backend:${{ env.IMAGE_TAG }} ./backend
+      - name: Build Backend Image
+        run: docker build -t siddhartha54/chatapp-backend:${{ env.IMAGE_TAG }} ./backend
 
-    - name: Push Frontend Image
-      run: docker push siddhartha54/chatapp-frontend:${{ env.IMAGE_TAG }}
+      - name: Push Frontend Image
+        run: docker push siddhartha54/chatapp-frontend:${{ env.IMAGE_TAG }}
 
-    - name: Push Backend Image
-      run: docker push siddhartha54/chatapp-backend:${{ env.IMAGE_TAG }}
+      - name: Push Backend Image
+        run: docker push siddhartha54/chatapp-backend:${{ env.IMAGE_TAG }}
 
-    - name: Update Frontend Deployment
-      run: |
-        sed -i "s|image: .*/chatapp-frontend.*|image: siddhartha54/chatapp-frontend:${{ env.IMAGE_TAG }}|" k8s/frontend-deployment.yaml
+      - name: Update Frontend Deployment
+        run: |
+          sed -i "s|image: .*/chatapp-frontend.*|image: siddhartha54/chatapp-frontend:${{ env.IMAGE_TAG }}|" k8s/frontend-deployment.yaml
 
-    - name: Update Backend Deployment
-      run: |
-        sed -i "s|image: .*/chatapp-backend:.*|image: siddhartha54/chatapp-backend:${{ env.IMAGE_TAG }}|" k8s/backend-deployment.yaml
+      - name: Update Backend Deployment
+        run: |
+          sed -i "s|image: .*/chatapp-backend:.*|image: siddhartha54/chatapp-backend:${{ env.IMAGE_TAG }}|" k8s/backend-deployment.yaml
 
-    - name: Git Commit & Push Updated YAMLs
-      run: |
-       git config --global user.name "${{ secrets.GIT_USERNAME }}"
-       git config --global user.email "${{ secrets.GIT_EMAIL }}"
-       git add k8s/frontend-deployment.yml k8s/backend-deployment.yml
-       if ! git diff --cached --quiet; then
-       git commit -m "Update image tags to ${{ env.IMAGE_TAG }}"
-       git push https://x-access-token:${{ secrets.GIT_TOKEN }}@github.com/${{ github.repository }} HEAD:main
-       else
-       echo "No changes to commit."
-       fi
+      - name: Git Commit & Push Updated YAMLs
+        run: |
+          git config --global user.name "${{ secrets.GIT_USERNAME }}"
+          git config --global user.email "${{ secrets.GIT_EMAIL }}"
+          git add k8s/frontend-deployment.yaml k8s/backend-deployment.yaml
+          if ! git diff --cached --quiet; then
+            git commit -m "Update image tags to ${{ env.IMAGE_TAG }}"
+            git push https://x-access-token:${{ secrets.GIT_TOKEN }}@github.com/${{ github.repository }} HEAD:main
+          else
+            echo "No changes to commit."
+          fi
