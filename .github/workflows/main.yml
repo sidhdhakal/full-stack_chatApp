@@ -43,11 +43,11 @@ jobs:
 
     - name: Update Frontend Deployment
       run: |
-        sed -i "s|image: .*/chatapp-frontend.*|image: siddhartha54/bakery-frontend:${{ env.IMAGE_TAG }}|" k8s/frontend-deployment.yml
+        sed -i "s|image: .*/chatapp-frontend.*|image: siddhartha54/chatapp-frontend:${{ env.IMAGE_TAG }}|" k8s/frontend-deployment.yml
 
     - name: Update Backend Deployment
       run: |
-        sed -i "s|image: .*/chatapp-backend:.*|image: siddhartha54/bakery-backend:${{ env.IMAGE_TAG }}|" k8s/backend-deployment.yml
+        sed -i "s|image: .*/chatapp-backend:.*|image: siddhartha54/chatapp-backend:${{ env.IMAGE_TAG }}|" k8s/backend-deployment.yml
 
     - name: Git Commit & Push Updated YAMLs
       run: |
