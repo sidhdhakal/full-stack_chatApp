@@ -43,17 +43,17 @@ jobs:
 
     - name: Update Frontend Deployment
       run: |
-        sed -i "s|image: .*/chatapp-frontend.*|image: siddhartha54/chatapp-frontend:${{ env.IMAGE_TAG }}|" k8s/frontend-deployment.yml
+        sed -i "s|image: .*/chatapp-frontend.*|image: siddhartha54/chatapp-frontend:${{ env.IMAGE_TAG }}|" k8s/frontend-deployment.yaml
 
     - name: Update Backend Deployment
       run: |
-        sed -i "s|image: .*/chatapp-backend:.*|image: siddhartha54/chatapp-backend:${{ env.IMAGE_TAG }}|" k8s/backend-deployment.yml
+        sed -i "s|image: .*/chatapp-backend:.*|image: siddhartha54/chatapp-backend:${{ env.IMAGE_TAG }}|" k8s/backend-deployment.yaml
 
     - name: Git Commit & Push Updated YAMLs
       run: |
         git config --global user.name "${{ secrets.GIT_USERNAME }}"
         git config --global user.email "${{ secrets.GIT_EMAIL }}"
-        git add k8s/frontend-deployment.yml k8s/backend-deployment.yml
+        git add k8s/frontend-deployment.yaml k8s/backend-deployment.yaml
         git commit -m "Update image tags to ${{ env.IMAGE_TAG }}"
         git push https://x-access-token:${{ secrets.GIT_TOKEN }}@github.com/${{ github.repository }} HEAD:main
 
