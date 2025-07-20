@@ -16,6 +16,8 @@ spec:
       containers:
       - name: backend
         image: siddhartha54/chatapp-backend:1752993139
+
+        image: siddhartha54/chatapp-backend:4444444444444444
         imagePullPolicy: Always
         ports:
         - containerPort: 5001

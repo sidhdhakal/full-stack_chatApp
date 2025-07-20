@@ -16,14 +16,17 @@ spec:
       containers:
       - name: frontend
         image: siddhartha54/chatapp-frontend:1752993139
+
+        image: siddhartha54/chatapp-frontend:4444444444444444
+
         imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 80
         env:
         - name: NODE_ENV
           value: "production"
-        - name: BACKEND_URL
-          value: "http://backend:5001"
+        - name: REACT_APP_BACKEND_URL
+          value: "http://localhost:30501"
         readinessProbe:
           httpGet:
             path: /
