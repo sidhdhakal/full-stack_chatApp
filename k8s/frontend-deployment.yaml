@@ -15,9 +15,9 @@ spec:
     spec:
       containers:
       - name: frontend
-        image: siddhartha54/chatapp-frontend:88
+        image: siddhartha54/chatapp-frontend:99
 
-        image: siddhartha54/chatapp-frontend:88
+        image: siddhartha54/chatapp-frontend:99
 
         imagePullPolicy: IfNotPresent
         ports:
